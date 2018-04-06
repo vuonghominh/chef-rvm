@@ -29,7 +29,7 @@ def create_rvm_chef_user_environment
       @user = user
       # explicitly set rvm_path if user is set
       if @user.nil?
-        config['rvm_path'] = @@root_rvm_path
+        config['rvm_path'] = node['rvm']['root_path']
       else
         config['rvm_path'] = File.join(Etc.getpwnam(@user).dir, '.rvm')
       end
@@ -44,12 +44,6 @@ def create_rvm_chef_user_environment
         end
       end
     end
-
-    def self.root_rvm_path=(path)
-      @@root_rvm_path = path
-    end
   end
   ::RVM.const_set('ChefUserEnvironment', klass)
-
-  ::RVM::ChefUserEnvironment.root_rvm_path = node['rvm']['root_path']
 end

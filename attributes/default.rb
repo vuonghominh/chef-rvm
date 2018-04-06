@@ -62,17 +62,22 @@ default['rvm']['rvm_gem_options'] = "--no-rdoc --no-ri"
 default['rvm']['install_rubies']      = "true"
 default['rvm']['user_install_rubies'] = "true"
 
-case platform
-when "redhat","centos","fedora","scientific","amazon"
-  node.set['rvm']['install_pkgs']   = %w{sed grep tar gzip bzip2 bash curl git}
-  default['rvm']['user_home_root']  = '/home'
-when "debian","ubuntu","suse"
-  node.set['rvm']['install_pkgs']   = %w{sed grep tar gzip bzip2 bash curl git-core}
-  default['rvm']['user_home_root']  = '/home'
-when "gentoo"
-  node.set['rvm']['install_pkgs']   = %w{git}
-  default['rvm']['user_home_root']  = '/home'
-when "mac_os_x", "mac_os_x_server"
-  node.set['rvm']['install_pkgs']   = %w{git}
-  default['rvm']['user_home_root']  = '/Users'
-end
+default['rvm']['install_pkgs'] =
+  case node['platform']
+  when "redhat","centos","fedora","scientific","amazon"
+    %w{sed grep tar gzip bzip2 bash curl git}
+  when "debian","ubuntu","suse"
+    %w{sed grep tar gzip bzip2 bash curl git-core}
+  when "gentoo"
+    %w{git}
+  when "mac_os_x", "mac_os_x_server"
+    %w{git}
+  end
+
+default['rvm']['user_home_root'] =
+  case node['platform']
+  when "redhat","centos","fedora","scientific","amazon", "debian","ubuntu","suse", "gentoo"
+    '/home'
+  when "mac_os_x", "mac_os_x_server"
+    '/Users'
+  end
